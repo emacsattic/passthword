@@ -1,9 +1,10 @@
-;;; passthword.el --- Simple password manager        -*- lexical-binding: t; -*-
+;;; passthword.el --- Simple password manager
 
 ;; Copyright (C) 2014  Peter Stiernström
 
-;; Author: Peter Stiernström <peter.stiernstrom@pidu-2.local>
+;; Author: Peter Stiernström <peter@stiernstrom.se>
 ;; Version: 1.0
+;; Package-Requires: ((cl-lib "0.5"))
 ;; Keywords:
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -30,9 +31,9 @@
 (require 'cl-lib)
 
 (defcustom passthword-password-file
- (expand-file-name "~/.emacs.d/safe.gpg")
+ (expand-file-name "~/.emacs.d/passthword.gpg")
  "Where to store saved password. This should be a file ending with .gpg to make sure epg encrypt it."
- :group 'safe)
+ :group 'passthword)
 
 (defun passthword--read-store ()
  "Read password store into memory."

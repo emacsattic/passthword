@@ -6,7 +6,7 @@ A simple password manager with a slight lisp.
 
 Installation alternatives:
 
-- Download goto-gem.el and drop it somewhere in your `load-path`.
+- Download passthword.el and drop it somewhere in your `load-path`.
 
 # Usage
 

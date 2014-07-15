@@ -7,6 +7,7 @@ A simple password manager with a slight lisp.
 Installation alternatives:
 
 - Download passthword.el and drop it somewhere in your `load-path`.
+- If you have melpa configured it's available through `package-install`.
 
 # Usage
 

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014  Peter Stiernström
 
 ;; Author: Peter Stiernström <peter@stiernstrom.se>
-;; Version: 1.0
+;; Version: 1.1
 ;; Package-Requires: ((cl-lib "0.5"))
 ;; Keywords:
 
@@ -22,9 +22,15 @@
 
 ;;; Commentary:
 
-;; M-x passthword retrieves an entry by showing you the username and making the password available for yanking.
-;; C-u M-x passthword creates a new entry.
-;; M-x customize-group [passthword] to specify an alternative password file.
+;; M-x passthword retrieves an entry by showing you the username and
+;; making the password available for yanking.
+;;
+;; C-u M-x passthword creates a new entry, to generate a random
+;; password while creating a new entry press C-SPC when prompted for
+;; password.
+;;
+;; M-x customize-group [passthword] to specify an alternative password
+;; file.
 
 ;;; Code:
 
@@ -70,7 +76,9 @@
  (let* ((entries (passthword--read-store))
         (description (completing-read "New [Description]: " (mapcar 'car entries) nil 'confirm))
         (username (completing-read "New [Username]: " (mapcar 'cadr entries) nil 'confirm))
-        (password (read-passwd "New [Password]: ")))
+        (password (minibuffer-with-setup-hook
+                   (lambda () (local-set-key (kbd "C-SPC") 'passthword-random-password))
+                   (read-passwd "New [Password]: "))))
   (passthword--write-to-store (list description username password))))
 
 (defun passthword--read ()
@@ -83,6 +91,14 @@
    (insert (caddr entry))
    (kill-region (point-min) (point-max)))
   (message "Copied password for username: %s" (cadr entry))))
+
+(defun passthword-random-password ()
+ "Insert a random password."
+ (interactive)
+ (insert
+  (sha1
+   (mapconcat 'number-to-string
+    (cl-loop for n below 10 collect (random t)) ""))))
 
 ;;;###autoload
 (defun passthword (prefix)

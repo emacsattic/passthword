@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014  Peter Stiernström
 
 ;; Author: Peter Stiernström <peter@stiernstrom.se>
-;; Version: 1.2
+;; Version: 1.3
 ;; Package-Requires: ((cl-lib "0.5"))
 ;; Keywords:
 
@@ -70,28 +70,6 @@
     (push entry updated-entries))
    (passthword--persist updated-entries))))
 
-(defun passthword--store ()
- "Create a new entry in the password store."
- (interactive)
- (let* ((entries (passthword--read-store))
-        (description (completing-read "New [Description]: " (mapcar 'car entries) nil 'confirm))
-        (username (completing-read "New [Username]: " (mapcar 'cadr entries) nil 'confirm))
-        (password (minibuffer-with-setup-hook
-                   (lambda () (local-set-key (kbd "C-SPC") 'passthword-random-password))
-                   (read-passwd "New [Password]: "))))
-  (passthword--write-to-store (list description username password))))
-
-(defun passthword--read ()
- "Read an entry from the password store."
- (interactive)
- (let* ((entries (passthword--read-store))
-        (description (completing-read "Select credential: " (mapcar 'car entries)))
-        (entry (cl-find description entries :key 'car :test 'equal)))
-  (with-temp-buffer
-   (insert (caddr entry))
-   (kill-region (point-min) (point-max)))
-  (message "Copied password for username: %s" (cadr entry))))
- 
 (defun passthword-random-password ()
  "Insert a random password."
  (interactive)
@@ -112,13 +90,37 @@
    (message "Deleted: %s" (car entry)))))
 
 ;;;###autoload
+(defun passthword-get ()
+ "Read an entry from the password store."
+ (interactive)
+ (let* ((entries (passthword--read-store))
+        (description (completing-read "Select credential: " (mapcar 'car entries)))
+        (entry (cl-find description entries :key 'car :test 'equal)))
+  (with-temp-buffer
+   (insert (caddr entry))
+   (kill-region (point-min) (point-max)))
+  (message "Copied password for username: %s" (cadr entry))))
+
+;;;###autoload
+(defun passthword-put ()
+ "Create a new entry in the password store."
+ (interactive)
+ (let* ((entries (passthword--read-store))
+        (description (completing-read "New [Description]: " (mapcar 'car entries) nil 'confirm))
+        (username (completing-read "New [Username]: " (mapcar 'cadr entries) nil 'confirm))
+        (password (minibuffer-with-setup-hook
+                   (lambda () (local-set-key (kbd "C-SPC") 'passthword-random-password))
+                   (read-passwd "New [Password]: "))))
+  (passthword--write-to-store (list description username password))))
+
+;;;###autoload
 (defun passthword (prefix)
  "Manage passwords. With PREFIX interactively create a new entry.
 Without PREFIX pick an entry and copy it's password."
  (interactive "P")
  (if prefix
-  (passthword--store)
-  (passthword--read)))
+  (passthword-put)
+  (passthword-get)))
 
 (provide 'passthword)
 ;;; passthword.el ends here

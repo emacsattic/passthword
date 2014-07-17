@@ -18,3 +18,5 @@ one.
 Issue `M-x passthword` to select a password, the username will be
 briefly shown through 'message and the password copied for you to
 yank.
+
+You can also delete a password through `M-x passthword-delete`.

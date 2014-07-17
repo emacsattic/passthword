@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014  Peter Stiernström
 
 ;; Author: Peter Stiernström <peter@stiernstrom.se>
-;; Version: 1.1
+;; Version: 1.2
 ;; Package-Requires: ((cl-lib "0.5"))
 ;; Keywords:
 
@@ -91,7 +91,7 @@
    (insert (caddr entry))
    (kill-region (point-min) (point-max)))
   (message "Copied password for username: %s" (cadr entry))))
-
+ 
 (defun passthword-random-password ()
  "Insert a random password."
  (interactive)
@@ -99,6 +99,17 @@
   (sha1
    (mapconcat 'number-to-string
     (cl-loop for n below 10 collect (random t)) ""))))
+
+;;;###autoload
+(defun passthword-delete ()
+ "Delete an entry from the password store."
+ (interactive)
+ (let* ((entries (passthword--read-store))
+        (description (completing-read "Select credential: " (mapcar 'car entries)))
+        (entry (cl-find description entries :key 'car :test 'equal)))
+  (when entry
+   (passthword--persist (cl-remove-if (lambda (e) (equal (car entry) (car e))) entries))
+   (message "Deleted: %s" (car entry)))))
 
 ;;;###autoload
 (defun passthword (prefix)

@@ -4,6 +4,8 @@ A simple password manager with a slight lisp.
 
 ## Installation
 
+[![MELPA](http://melpa.org/packages/passthword-badge.svg)](http://melpa.org/#/passthword)
+
 Installation alternatives:
 
 - Download passthword.el and drop it somewhere in your `load-path`.

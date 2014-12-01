@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014  Peter Stiernström
 
 ;; Author: Peter Stiernström <peter@stiernstrom.se>
-;; Version: 1.3
+;; Version: 1.4
 ;; Package-Requires: ((cl-lib "0.5"))
 ;; Keywords:
 
@@ -83,7 +83,7 @@
  "Delete an entry from the password store."
  (interactive)
  (let* ((entries (passthword--read-store))
-        (description (completing-read "Select credential: " (mapcar 'car entries)))
+        (description (ido-completing-read "Select credential: " (mapcar 'car entries)))
         (entry (cl-find description entries :key 'car :test 'equal)))
   (when entry
    (passthword--persist (cl-remove-if (lambda (e) (equal (car entry) (car e))) entries))
@@ -94,7 +94,7 @@
  "Read an entry from the password store."
  (interactive)
  (let* ((entries (passthword--read-store))
-        (description (completing-read "Select credential: " (mapcar 'car entries)))
+        (description (ido-completing-read "Select credential: " (mapcar 'car entries)))
         (entry (cl-find description entries :key 'car :test 'equal)))
   (with-temp-buffer
    (insert (caddr entry))
@@ -106,8 +106,8 @@
  "Create a new entry in the password store."
  (interactive)
  (let* ((entries (passthword--read-store))
-        (description (completing-read "New [Description]: " (mapcar 'car entries) nil 'confirm))
-        (username (completing-read "New [Username]: " (mapcar 'cadr entries) nil 'confirm))
+        (description (ido-completing-read "New [Description]: " (mapcar 'car entries) nil 'confirm))
+        (username (ido-completing-read "New [Username]: " (mapcar 'cadr entries) nil 'confirm))
         (password (minibuffer-with-setup-hook
                    (lambda () (local-set-key (kbd "C-SPC") 'passthword-random-password))
                    (read-passwd "New [Password]: "))))

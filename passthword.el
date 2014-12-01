@@ -35,6 +35,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'ido)
 
 (defcustom passthword-password-file
  (expand-file-name "~/.emacs.d/passthword.gpg")
